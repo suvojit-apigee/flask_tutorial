@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Management</title>
+    <link rel="stylesheet" href="/static/user.css" />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a href="#register" id="nav-register" class="active"
+          >User Registration</a>
+        <a href="#view" id="nav-view">View User Details</a>
+      </nav>
+    </header>
+
+    <div class="container">
+      <!-- Registration Page -->
+      <section id="register-page" class="page active">
+        <h2>User Registration</h2>
+        <div id="message"></div>
+        <form id="registration-form">
+          <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" required />
+          </div>
+          <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" required />
+          </div>
+          <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" required />
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone Number:</label>
+            <input type="tel" id="phone" required />
+          </div>
+          <button type="submit">Register User</button>
+        </form>
+      </section>
+
+      <!-- View Details Page -->
+      <section id="view-page" class="page">
+        <h2>View User Details</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Phone Number</th>
+            </tr>
+          </thead>
+          <tbody id="user-details-body">
+            <!-- User details will be inserted here by JavaScript -->
+          </tbody>
+        </table>
+        <div id="view-message"></div>
+      </section>
+    </div>
+    <script src="/static/spa_user_management.js"></script>
+  </body>
+</html>
