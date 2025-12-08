@@ -3,10 +3,19 @@ from flask import render_template
 from flask import request
 import requests
 import json
+import os
+from dotenv import load_dotenv
 
-HOST_URL = "http://localhost:5000"
+load_dotenv()
+
+
+HOST_URL = os.getenv("HOST_URL", "http://localhost:5000")
 
 app = Flask(__name__)
+
+@app.route("/health")
+def health():
+    return "OK", 200
 
 @app.route('/')
 def index():
@@ -34,10 +43,6 @@ def view_data():
     httpStatus = response.json().get("status", "")
     print(f"Received data: {data_list}, message: {message}, status: {httpStatus}")
     return response.json()
-
-    # list_data = response.json()
-    # print(f"Received data: {list_data}")
-    # return list_data
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=True)

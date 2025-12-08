@@ -28,6 +28,10 @@ collection = db['users']
 
 app = Flask(__name__)
 
+@app.route("/health")
+def health():
+    return "OK", 200
+
 @app.route('/api/register', methods=['POST'])
 def create_user():
     name = request.json.get('username')
