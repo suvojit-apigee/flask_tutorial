@@ -35,52 +35,63 @@ document.addEventListener("DOMContentLoaded", function () {
     const registrationForm = document.getElementById("registration-form");
 
     registrationForm.addEventListener("submit", async (event) => {
-      event.preventDefault();
+      if (!registrationForm.checkValidity()) {
+        e.preventDefault();
+        document.getElementById("message").innerText =
+          "Please fix highlighted fields before submitting.";
+        document.getElementById("message").style.color = "red";
+      } else {
+        event.preventDefault();
+        //alert("Submitting registration form...");
+        const outputDiv = document.getElementById("message");
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+        const email = document.getElementById("email").value;
+        const phone = document.getElementById("phone").value;
 
-      const outputDiv = document.getElementById("message");
-      const username = document.getElementById("username").value;
-      const password = document.getElementById("password").value;
-      const email = document.getElementById("email").value;
-      const phone = document.getElementById("phone").value;
+        // Create a form data to send to the server
+        const formData = new FormData();
+        formData.append("username", username);
+        formData.append("password", password);
+        formData.append("email", email);
+        formData.append("phone", phone);
 
-      // Create a form data to send to the server
-      const formData = new FormData();
-      formData.append("username", username);
-      formData.append("password", password);
-      formData.append("email", email);
-      formData.append("phone", phone);
-
-      try {
-        const response = await fetch("/api/register", {
-          method: "POST",
-          body: formData,
-        });
-        result = await response.json();
-        const status = result.status || response.status;
-        console.log("Registration response status:", status);
-        if (status=== 200) {
-          console.log(`Inside success block of status == 200, data: ${JSON.stringify(result)}`);
-          const dataOutput = result.data || {};
-          const name = dataOutput.username || username;
-          console.log("Registration response username:", name);
-          outputDiv.textContent = `Registration successful! Welcome, ${name}`;
-          outputDiv.style.color = "green";
+        try {
+          const response = await fetch("/api/register", {
+            method: "POST",
+            body: formData,
+          });
+          result = await response.json();
+          const status = result.status || response.status;
+          console.log("Registration response status:", status);
+          if (status === 200) {
+            console.log(
+              `Inside success block of status == 200, data: ${JSON.stringify(
+                result
+              )}`
+            );
+            const dataOutput = result.data || {};
+            const name = dataOutput.username || username;
+            console.log("Registration response username:", name);
+            outputDiv.textContent = `Registration successful! Welcome, ${name}`;
+            outputDiv.style.color = "green";
+            registrationForm.reset();
+          } else {
+            outputDiv.textContent = `Registration failed with status: ${result.message}`;
+            registrationForm.reset();
+          }
+        } catch (error) {
+          console.error("Error during registration:", error);
+          const errorMessage = error.message || "Unknown error";
+          outputDiv.textContent = `Registration failed: ${errorMessage}`;
+          outputDiv.style.color = "red";
           registrationForm.reset();
-        } else {
-          outputDiv.textContent = `Registration failed with status: ${result.message}`;
-          registrationForm.reset();  
         }
-      } catch (error) {
-        console.error("Error during registration:", error);
-        const errorMessage = result.message || "Unknown error";
-        outputDiv.textContent = `Registration failed: ${errorMessage}`;
-        outputDiv.style.color = "red";
-        registrationForm.reset();
-      }
 
-      setTimeout(() => {
-        outputDiv.textContent = "";
-      }, 3000);
+        setTimeout(() => {
+          outputDiv.textContent = "";
+        }, 3000);
+      }
     });
   }
   // Function to update the view user details table
@@ -97,11 +108,11 @@ document.addEventListener("DOMContentLoaded", function () {
       if (response.ok) {
         users = await response.json();
         console.log("Fetched user details:", users);
-        if(users.data.length > 0){
-          const userList = users.data.map(user => ({
+        if (users.data.length > 0) {
+          const userList = users.data.map((user) => ({
             username: user.username,
             email: user.email,
-            phone: user.phone
+            phone: user.phone,
           }));
           userList.forEach((user) => {
             const row = document.createElement("tr");
@@ -114,7 +125,7 @@ document.addEventListener("DOMContentLoaded", function () {
           });
         } else {
           tbody.innerHTML = "";
-          viewMessageDiv.textContent = "No user details available.";  
+          viewMessageDiv.textContent = "No user details available.";
         }
       } else {
         tbody.innerHTML = "";
