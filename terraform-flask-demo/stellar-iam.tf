@@ -28,13 +28,13 @@ data "aws_iam_policy_document" "aws_s3_bucket_access_document" {
   statement {
     effect    = "Allow"
     actions   = ["s3:ListBucket", "s3:GetObject", "s3:PutObject", "s3:DeleteObject"]
-    resources = ["aws_s3_bucket.stellar_bucket.arn", "${aws_s3_bucket.stellar_bucket.arn}/*"]
+    resources = [aws_s3_bucket.stellar_bucket.arn, "${aws_s3_bucket.stellar_bucket.arn}/*"]
   }
 }
 
 resource "aws_iam_policy" "s3_bucket_policy" {
-  name        = "test-policy"
-  description = "A test policy"
+  name        = "stellar-bucket-policy"
+  description = "Policy to allow access to Stellar S3 bucket as mount point from EC2 instances"
   policy      = data.aws_iam_policy_document.aws_s3_bucket_access_document.json
 }
 
