@@ -2,17 +2,17 @@ resource "aws_iam_user" "stellar_devops_user" {
   name = "stellar-devops-user"
 }
 
-resource "aws_iam_access_key" "stellar_devops_access_key" {
+resource "aws_iam_access_key" "stellar_user_key" {
   user = aws_iam_user.stellar_devops_user.name
 }
 
 output "access_key_id" {
-  value     = aws_iam_access_key.stellar_devops_access_key.id
+  value     = aws_iam_access_key.stellar_user_key.id
   sensitive = true
 }
 
-output "secret" {
-  value     = aws_iam_access_key.stellar_devops_access_key.encrypted_secret
+output "secret_access_key" {
+  value     = aws_iam_access_key.stellar_user_key.secret
   sensitive = true
 }
 
@@ -43,7 +43,17 @@ resource "aws_iam_role" "stellar_devops_role" {
   assume_role_policy = data.aws_iam_policy_document.stellar_devops_role_document.json
 }
 
+resource "aws_iam_user_policy_attachment" "ec2_full_access" {
+  user       = aws_iam_user.stellar_devops_user.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
+}
+
 data "aws_iam_policy_document" "aws_s3_bucket_access_document" {
+  statement {
+    effect    = "Allow"
+    actions   = ["s3:ListAllMyBuckets"]
+    resources = ["arn:aws:s3:::*"]
+  }
   statement {
     effect    = "Allow"
     actions   = ["s3:ListBucket", "s3:GetObject", "s3:PutObject", "s3:DeleteObject"]
