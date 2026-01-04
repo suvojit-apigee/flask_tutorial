@@ -12,11 +12,20 @@ data "aws_ami" "ubuntu" {
     values = ["hvm"]
   }
 }
+
+resource "aws_key_pair" "stellar_keypair" {
+  key_name   = "stellar-key"
+  public_key = file("~/.ssh/id_rsa.pub")
+}
+
 resource "aws_instance" "stellar_instance" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t2.micro"
   subnet_id     = aws_subnet.stellar_subnet1.id
   security_groups = [aws_security_group.stellar_sg.id]
+  iam_instance_profile = aws_iam_instance_profile.stellar_devops_instance_profile.name
+  key_name      = aws_key_pair.stellar_keypair.key_name
+  associate_public_ip_address = true
 
   user_data = <<-EOF
               #!/bin/bash
@@ -29,5 +38,9 @@ resource "aws_instance" "stellar_instance" {
   tags = {
     Name = "stellar_instance"
   }
+}
+
+output "instance_public_ip" {
+    value = aws_instance.stellar_instance.public_ip
 }
 
