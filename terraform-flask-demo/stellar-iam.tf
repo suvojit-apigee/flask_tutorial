@@ -2,6 +2,25 @@ resource "aws_iam_user" "stellar_devops_user" {
   name = "stellar-devops-user"
 }
 
+resource "aws_iam_access_key" "stellar_devops_access_key" {
+  user = aws_iam_user.stellar_devops_user.name
+}
+
+output "access_key_id" {
+  value     = aws_iam_access_key.stellar_devops_access_key.id
+  sensitive = true
+}
+
+output "secret" {
+  value     = aws_iam_access_key.stellar_devops_access_key.encrypted_secret
+  sensitive = true
+}
+
+resource "aws_iam_user_group_membership" "stellar_devops_user_membership" {
+  user   = aws_iam_user.stellar_devops_user.name
+  groups = [aws_iam_group.stellar-devops-group.name]
+}
+
 resource "aws_iam_group" "stellar-devops-group" {
   name = "stellar-devops-group"
 }

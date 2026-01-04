@@ -24,8 +24,8 @@ locals {
 }
 
 resource "aws_vpc" "stellar_vpc" {
-  cidr_block = "10.0.0.0/16"
-  enable_dns_support = true
+  cidr_block           = "10.0.0.0/16"
+  enable_dns_support   = true
   enable_dns_hostnames = true
 
   tags = {
@@ -34,28 +34,28 @@ resource "aws_vpc" "stellar_vpc" {
 }
 
 resource "aws_subnet" "stellar_subnet1" {
-    vpc_id            = aws_vpc.stellar_vpc.id
-    cidr_block        = "10.0.1.0/24"
-    availability_zone = local.availability_zones[0]
+  vpc_id            = aws_vpc.stellar_vpc.id
+  cidr_block        = "10.0.1.0/24"
+  availability_zone = local.availability_zones[0]
 
-    tags = {
-      Name = "stellar_subnet1"
-    } 
+  tags = {
+    Name = "stellar_subnet1"
+  }
 }
 
 resource "aws_subnet" "stellar_subnet2" {
-    vpc_id            = aws_vpc.stellar_vpc.id
-    cidr_block        = "10.0.2.0/24"
-    availability_zone = local.availability_zones[1]
+  vpc_id            = aws_vpc.stellar_vpc.id
+  cidr_block        = "10.0.2.0/24"
+  availability_zone = local.availability_zones[1]
 
-    tags = {
-      Name = "stellar_subnet2"
-    }
+  tags = {
+    Name = "stellar_subnet2"
+  }
 }
 
 resource "aws_internet_gateway" "stellar_internert_gateway" {
   vpc_id = aws_vpc.stellar_vpc.id
-  
+
   tags = {
     Name = "stellar_internet_gateway"
   }
